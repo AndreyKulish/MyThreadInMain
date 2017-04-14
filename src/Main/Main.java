@@ -3,24 +3,31 @@ package Main;
 
 public class Main{
 
-    public static int incrmnt;
-    /*private volatile int incrmnt;*/
+    public volatile static int incrmnt;
 
     public static void main(String[] args) throws InterruptedException {
         Main main = new Main();
         HZ hz = new HZ(main);
-        for (int i = 0; i < 1000; i++){
-            Thread thread = new Thread(hz);
-            thread.start();
-        }
-
-        Thread.sleep(100);
+            Thread thread1 = new Thread(hz);
+            Thread thread2 = new Thread(hz);
+            thread1.start();
+            thread2.start();
+        System.out.println("Whait...");
+        thread1.join();
+        thread2.join();
         System.out.println(main.incrmnt);
 
     }
 
-    /*synchronized */void incr(){
-        Main.incrmnt++;
+    synchronized void incr(){
+        for (int i = 0; i < 2000; i++) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Main.incrmnt++;
+        }
     }
 
 
